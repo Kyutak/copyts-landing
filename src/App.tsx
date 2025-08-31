@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { HeroHighlightDemo } from '@/components/demo/hero-highlight-demo';
 import { Highlight } from '@/components/ui/hero-highlight';
 import {
   Zap,
@@ -15,7 +14,6 @@ import {
   Mail,
   Phone,
   MapPin,
-  ChevronDown,
   Play,
   Sparkles,
   X,
