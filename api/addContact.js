@@ -19,7 +19,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         email,
-        listIds: [2], // 📝 coloque aqui o ID da lista da Brevo
+        listIds: [7],
         updateEnabled: true, // atualiza se já existir
       }),
     });
