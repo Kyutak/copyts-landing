@@ -18,10 +18,15 @@ import {
   ChevronDown,
   Play,
   Sparkles,
+  X,
 } from 'lucide-react';
 
 function App() {
   const [email, setEmail] = useState('');
+  const [popupEmail, setPopupEmail] = useState('');
+  const [showPopup, setShowPopup] = useState(false);
+  const [showThankYou, setShowThankYou] = useState(false);
+  const [popupThankYou, setPopupThankYou] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [activeFeature, setActiveFeature] = useState(0);
 
@@ -34,8 +39,24 @@ function App() {
     // Handle email submission
     console.log('Email submitted:', email);
     setEmail('');
-    // Show success message
-    alert('Obrigado! Você foi adicionado à lista de espera do Copyts.');
+    setShowThankYou(true);
+    setTimeout(() => setShowThankYou(false), 3000);
+  };
+
+  const handlePopupSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Popup email submitted:', popupEmail);
+    setPopupEmail('');
+    setPopupThankYou(true);
+    setTimeout(() => {
+      setPopupThankYou(false);
+      setShowPopup(false);
+    }, 2000);
+  };
+
+  const openPopup = () => {
+    setShowPopup(true);
+    setPopupThankYou(false);
   };
 
   const showDemo = () => {
@@ -136,7 +157,10 @@ function App() {
                 Depoimentos
               </a>
             </nav>
-            <button className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-6 py-2 rounded-full hover:from-purple-600 hover:to-blue-600 transition-all duration-300 transform hover:scale-105">
+            <button 
+              onClick={openPopup}
+              className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-6 py-2 rounded-full hover:from-purple-600 hover:to-blue-600 transition-all duration-300 transform hover:scale-105"
+            >
               Entrar na Lista
             </button>
           </div>
@@ -144,7 +168,7 @@ function App() {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+      <section id="hero-section" className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
           <div
             className={`transition-all duration-1000 ${
@@ -174,27 +198,36 @@ function App() {
               <strong className="text-white"> você. </strong>
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-              <form
-                onSubmit={handleSubmit}
-                className="flex flex-col sm:flex-row gap-2 w-full max-w-lg"
-              >
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Seu melhor email profissional"
-                  required
-                  className="flex-1 px-6 py-4 rounded-full text-gray-900 bg-white/95 backdrop-blur-sm border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500"
-                />
-                <button
-                  type="submit"
-                  className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-8 py-4 rounded-full hover:from-purple-600 hover:to-blue-600 transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-2 whitespace-nowrap font-semibold"
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 min-h-[80px]">
+              {!showThankYou ? (
+                <form
+                  onSubmit={handleSubmit}
+                  className="flex flex-col sm:flex-row gap-2 w-full max-w-lg"
                 >
-                  <span>Garantir Acesso</span>
-                  <ArrowRight className="w-5 h-5" />
-                </button>
-              </form>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Seu melhor email profissional"
+                    required
+                    className="flex-1 px-6 py-4 rounded-full text-gray-900 bg-white/95 backdrop-blur-sm border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500"
+                  />
+                  <button
+                    type="submit"
+                    className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-8 py-4 rounded-full hover:from-purple-600 hover:to-blue-600 transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-2 whitespace-nowrap font-semibold"
+                  >
+                    <span>Garantir Acesso</span>
+                    <ArrowRight className="w-5 h-5" />
+                  </button>
+                </form>
+              ) : (
+                <div className="flex items-center justify-center space-x-3 bg-blue-500/20 backdrop-blur-sm border border-blue-400/30 rounded-full px-8 py-4">
+                  <CheckCircle className="w-6 h-6 text-blue-400" />
+                  <span className="text-white font-semibold text-lg">
+                    Obrigado! Você está na lista!
+                  </span>
+                </div>
+              )}
             </div>
             <br />
           </div>
@@ -487,27 +520,83 @@ function App() {
             a condições especiais que nunca mais se repetirão.
           </p>
 
-          <form
-            onSubmit={handleSubmit}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8 max-w-lg mx-auto"
+          <button
+            onClick={() => {
+              const heroSection = document.getElementById('hero-section');
+              if (heroSection) {
+                heroSection.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+            className="bg-white text-purple-600 px-8 py-4 rounded-full hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 font-semibold whitespace-nowrap"
           >
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Seu email profissional"
-              required
-              className="flex-1 px-6 py-4 rounded-full text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-white placeholder-gray-500"
-            />
-            <button
-              type="submit"
-              className="bg-white text-purple-600 px-8 py-4 rounded-full hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 font-semibold whitespace-nowrap"
-            >
-              Quero meu acesso
-            </button>
-          </form>
+            Quero meu acesso
+          </button>
         </div>
       </section>
+
+      {/* Popup Modal */}
+      {showPopup && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-gradient-to-br from-slate-900 to-purple-900 rounded-2xl p-8 max-w-md w-full border border-white/20 relative transform transition-all duration-300 scale-100">
+            <button
+              onClick={() => setShowPopup(false)}
+              className="absolute top-4 right-4 text-white/60 hover:text-white transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Hexagon className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                Teste nossa versão Beta!
+              </h3>
+              <p className="text-white/70">
+                Seja um dos primeiros a ter acesso ao Copyts e receba condições especiais de lançamento.
+              </p>
+            </div>
+
+            {!popupThankYou ? (
+              <form onSubmit={handlePopupSubmit} className="space-y-4">
+                <input
+                  type="email"
+                  value={popupEmail}
+                  onChange={(e) => setPopupEmail(e.target.value)}
+                  placeholder="Seu melhor email profissional"
+                  required
+                  className="w-full px-6 py-4 rounded-full text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500"
+                />
+                <button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white px-8 py-4 rounded-full hover:from-purple-600 hover:to-blue-600 transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-2 font-semibold"
+                >
+                  <span>Garantir Meu Acesso VIP</span>
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+              </form>
+            ) : (
+              <div className="text-center py-8">
+                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="w-8 h-8 text-white" />
+                </div>
+                <h4 className="text-xl font-bold text-white mb-2">
+                  Perfeito! Você está na lista VIP!
+                </h4>
+                <p className="text-white/70">
+                  Em breve você receberá todas as novidades e acesso prioritário ao Copyts.
+                </p>
+              </div>
+            )}
+
+            <div className="mt-6 text-center">
+              <p className="text-white/50 text-xs">
+                Seus dados estão seguros conosco. Sem spam, apenas conteúdo de valor.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="py-12 px-4 sm:px-6 lg:px-8 bg-black/40">
@@ -585,7 +674,7 @@ function App() {
               <div className="space-y-3 text-sm">
                 <div className="flex items-center text-white/70">
                   <Mail className="w-4 h-4 mr-2" />
-                  contato@copyts.com
+                  copyts.ia@gmail.com
                 </div>
                 <div className="flex items-center text-white/70">
                   <Phone className="w-4 h-4 mr-2" />
