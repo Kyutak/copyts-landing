@@ -5,10 +5,7 @@ export default async function handler(req, res) {
   }
 
   const { email } = req.body;
-
-  if (!email) {
-    return res.status(400).json({ message: "Email é obrigatório" });
-  }
+  if (!email) return res.status(400).json({ message: "Email é obrigatório" });
 
   try {
     const response = await fetch("https://api.brevo.com/v3/contacts", {
@@ -16,16 +13,18 @@ export default async function handler(req, res) {
       headers: {
         "accept": "application/json",
         "content-type": "application/json",
-        "api-key": process.env.BREVO_API_KEY,
+        "api-key": process.env.BREVO_API_KEY, // chave segura do .env/local
       },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({
+        email,
+        listIds: [7], // coloque aqui o ID da sua lista na Brevo
+        updateEnabled: true, // atualiza se o email já existir
+      }),
     });
 
     const data = await response.json();
 
-    if (!response.ok) {
-      return res.status(response.status).json(data);
-    }
+    if (!response.ok) return res.status(response.status).json(data);
 
     return res.status(200).json({ message: "Contato adicionado com sucesso", data });
   } catch (error) {
