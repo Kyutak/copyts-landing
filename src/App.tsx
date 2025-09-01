@@ -32,47 +32,45 @@ function App() {
     setIsVisible(true);
   }, []);
 
-  // função genérica que manda o e-mail pra API
-  const sendToBrevo = async (email: string) => {
-    try {
-      const res = await fetch("/api/addContact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      return res.ok;
-    } catch (err) {
-      console.error("Erro ao enviar para Brevo:", err);
-      return false;
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const ok = await sendToBrevo(email);
-    if (ok) {
-      console.log("Email submitted:", email);
-      setEmail("");
+    try {
+      await fetch("/api/addContact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }), // email do state do form
+      });
+
+      setEmail('');
       setShowThankYou(true);
       setTimeout(() => setShowThankYou(false), 3000);
+    } catch (err) {
+      console.error("Erro ao enviar email:", err);
     }
   };
 
   const handlePopupSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const ok = await sendToBrevo(popupEmail);
-    if (ok) {
-      console.log("Popup email submitted:", popupEmail);
-      setPopupEmail("");
+    try {
+      await fetch("/api/addContact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: popupEmail }), // email do state do popup
+      });
+
+      setPopupEmail('');
       setPopupThankYou(true);
       setTimeout(() => {
         setPopupThankYou(false);
         setShowPopup(false);
       }, 2000);
+    } catch (err) {
+      console.error("Erro ao enviar email (popup):", err);
     }
   };
+
 
 
   const openPopup = () => {
